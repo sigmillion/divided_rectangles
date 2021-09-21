@@ -1,11 +1,25 @@
 # divided_rectangles
 Implementation of divided rectangles algorithm.
 
+I first read about this method in the book [Algorithms for Optimization](https://mitpress.mit.edu/books/algorithms-optimization) (2019, MIT Press) by Mykel J. Kochenderfer and Tim A. Wheeler.
+
 Here is a [link](https://www.researchgate.net/publication/226216344_Lipschitzian_Optimisation_Without_the_Lipschitz_Constant) to the original paper.
 
 Jones, D.R., Perttunen, C.D. & Stuckman, B.E. Lipschitzian optimization without the Lipschitz constant. *J Optim Theory Appl* **79,** 157–181 (1993). https://doi.org/10.1007/BF00941892
 
 
+
+Here are a few useful pictures from the book (used here without permission).
+
+![scatter plot f(c) vs interval half width](Figure_5.png)
+
+And here's the lower convex hull of the points.
+
+![Scatter plot with convex hull points identified.](Figure_6.png)
+
+Here's an example in 1D.
+
+![1D example of the interval division process](Figure_7.png)
 
 I'm writing this in C++.  This is my first version and I'm sure there are more efficient ways to implement.  I'm using the most straightforward data structures and algorithms for ease of coding.  Then maybe I'll work on steamlining.
 
