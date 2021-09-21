@@ -10,6 +10,20 @@
 
 using namespace std;
 
+class binary {
+public:
+  binary() {}
+  ~binary() {}
+  double eval(vector<double> x) {
+    double y = 0.0;
+    for(int i=0; i<x.size(); i++) {
+      // y += x[i];
+      y += x[i] - x[i]*(x[i]-1);
+    }
+    return y;
+  }
+};
+
 class noncvx {
 public:
   noncvx() {}
@@ -131,13 +145,14 @@ bool sort_helper_tuple(tuple<int,double,vector<double>,double,vector<double>> a,
   double b0 = get<1>(b);
   double b1 = get<3>(b);
   double bval = (b0 < b1 ? b0 : b1);
-  return (aval < bval ? aval : bval);
+  return (aval < bval);
 }
 		       
 class rectangle {
 public:
   //static branin_wrap f;
-  static noncvx_wrap f;
+  //static noncvx_wrap f;
+  static binary f;
   vector<double> c; // center of rectangle
   vector<int> e; // side length exponents [0, 1, 2, 3, etc.]
   static power_list d; // actual side lengths d=(1/3)^e = [1, 1/3, 1/9, 1/27, 1/81, etc.]
@@ -214,6 +229,7 @@ public:
 	x2.assign(c.begin(), c.end());
 	x2[i] += delta;
 	f2 = f.eval(x2);
+
 	vals.push_back(tuple<int,double,vector<double>,double,vector<double>>(i,f1,x1,f2,x2));
       }
     }
@@ -242,7 +258,9 @@ public:
 };
 
 // Initialize the static members
-noncvx_wrap rectangle::f(vector<double>{-5.0,-5.0}, vector<double>{5.0,5.0});
+binary rectangle::f;
+//noncvx_wrap rectangle::f(vector<double>{-5.0,-5.0}, vector<double>{5.0,5.0});
+//noncvx_wrap rectangle::f(vector<double>{0.0,0.0}, vector<double>{1.0,1.0});
 //branin_wrap rectangle::f(vector<double>{-5.0,-5.0}, vector<double>{20.0,20.0});
 power_list rectangle::d(20);
 
@@ -252,11 +270,14 @@ int main(int argc, char* argv[]) {
 
   // Initialize with unit hypercube
   double epsilon = 1e-4;
-  rectangle* r = new rectangle(vector<double>{0.5,0.5}, vector<int>{0,0});
+  vector<double> c(10,0.5);
+  vector<int> e(10,0);
+  rectangle* r = new rectangle(c,e);
+  //rectangle* r = new rectangle(vector<double>{0.5,0.5}, vector<int>{0,0});
   double fmin = r->fc;
   R.push_back(r);
 
-  for(int t=0; t<20; t++) {
+  for(int t=0; t<50; t++) {
   
     // Find set of potentially optimal rectangles
     // Suppose you have a set of rectangles.  Sort them by their function values for each side length exponent set.
@@ -307,10 +328,16 @@ int main(int argc, char* argv[]) {
 
     }
   }
+
   // Print out all the rectangles
   for(auto r : R) {
-    printf("[%f, %f],\n",r->c[0],r->c[1]);
+    printf("[");
+    for(auto ct : r->c) {
+      printf("%f, ",ct);
+    }
+    printf("]\n");
   }
+  printf("Number of rectangles = %lu\n",R.size());
   return 0;
 }
 
