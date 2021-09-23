@@ -21,6 +21,14 @@ Here's an example in 1D.
 
 ![1D example of the interval division process](Figure_7.png)
 
+
+
+Here's an example from the book in 2D.
+
+![DIRECT algorithm in 2D example](Figure_8.png)
+
+
+
 I'm writing this in C++.  This is my first version and I'm sure there are more efficient ways to implement.  I'm using the most straightforward data structures and algorithms for ease of coding.  Then maybe I'll work on steamlining.
 
 
