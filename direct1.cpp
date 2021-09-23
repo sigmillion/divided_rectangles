@@ -270,14 +270,16 @@ int main(int argc, char* argv[]) {
 
   // Initialize with unit hypercube
   double epsilon = 1e-4;
-  vector<double> c(10,0.5);
-  vector<int> e(10,0);
+  int dim = 200; // number of dimensions
+  int iter = 200; // number of iterations of divided rectangles method
+  vector<double> c(dim,0.5);
+  vector<int> e(dim,0);
   rectangle* r = new rectangle(c,e);
   //rectangle* r = new rectangle(vector<double>{0.5,0.5}, vector<int>{0,0});
   double fmin = r->fc;
   R.push_back(r);
 
-  for(int t=0; t<50; t++) {
+  for(int t=0; t<iter; t++) {
   
     // Find set of potentially optimal rectangles
     // Suppose you have a set of rectangles.  Sort them by their function values for each side length exponent set.
@@ -330,12 +332,22 @@ int main(int argc, char* argv[]) {
   }
 
   // Print out all the rectangles
+  if(0) {
   for(auto r : R) {
     printf("[");
     for(auto ct : r->c) {
       printf("%f, ",ct);
     }
     printf("]\n");
+  }
+  } else {
+    printf("[");
+    r = R.back();
+    for(auto ct : r->c) {
+      printf("%f, ",ct);
+    }
+    printf("]\n");
+    
   }
   printf("Number of rectangles = %lu\n",R.size());
   return 0;
