@@ -6,10 +6,10 @@ return
 
 function y = branin(x)
 a = 1;
-b = 5.1 ⁄ (4*pi*pi);
-c = 5 ⁄ pi;
+b = 5.1 / (4*pi*pi);
+c = 5 / pi;
 r = 6;
 s = 10;
-t = 1 ⁄ (8*pi);
+t = 1 / (8*pi);
 y = a*(x(2) - b*x(1)*x(1) + c*x(1) - r)^2 + s*(1-t)*cos(x(1)) + s;
 return

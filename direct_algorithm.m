@@ -6,62 +6,70 @@ opt_fun = @(x) branin_function(x); % Set the function to be optimized
 c = 0.5*ones(dim,1); % Center of dim-dimensional unit cube
 e = zeros(dim,1); % List of exponents (3^e) of rectangle edge lengths
 r = new_rectangle(opt_fun, c, e); % Make a rectangle
-R = [r]; % Add rectangle to the list
+
+% Create list of lists of rectangles (using nested cell arrays)
+epsilon = 1e-4;
+emax = ceil(log(epsilon) / log(1/3));
+enum = emax + 1;
+elist = [0:emax];
+dlist = (1/3).^elist;
+fprintf('epsilon = %g, emax = %d, (1/3)^emax = %g\n',epsilon,emax,(1/3)^emax);
+R = cell(enum,1);
+R{r.emin+1} = [r];
 
 % Main loop for divided rectangles method
 iter = 200; % Number of iterations in divided rectangles method
 for i=1:iter
     % Find set of potentially optimal rectangles
-    points = cell(30,1); % Potentially optimal rectangles
-    for j=1:length(R) % Loop over the list of rectangles
-        % 1. Find the maximum side length = minimum exponent for each rectangle
-        e = min(r.e); % exponent (1/3)^e
-        r.emin = e;
-        r.dmax = (1/3)^e;
-        if(length(points{e+1}) > 0)
-            if(R(j).fc < points{e+1}.fc)
-                points{e+1} = R(j);
-            end
-        else
-            points{e+1} = R(j);
-        end
-    end
     subpoints = {};
-    isp = 0;
-    for j=1:length(points)
-        if(length(points{j}) > 0)
-            isp = isp + 1;
-            subpoints{isp} = points{j};
+    for j=1:length(R)
+        if(length(R{j}) > 0)
+            [themin,minind] = min([R{j}.fc]);
+            R{j}(minind).index = minind;
+            R{j}(minind).emin = j-1; % emin uses 0's based indexing
+            subpoints{end+1} = R{j}(minind);
         end
     end
     
     % Draw lines to find out which points will be kept in the set of potentially optimal rectangles.
-    optimal = [subpoints(1)];
-    io = 1;
+    optimal = [subpoints{1}];
     for j=2:length(subpoints)
         jbest = j;
-        best = 2 * (optimal(end).fc - subpoints(j).fc) / ...
-               (optimal(end).dmax - subpoints(j).dmax);
+        best = 2 * (optimal(end).fc - subpoints{j}.fc) / ...
+               (optimal(end).dmax - subpoints{j}.dmax);
         for k=j+1:length(subpoints)
-            tbest = 2 * (optimal(end).fc - subpoints(k).fc) / ...
-               (optimal(end).dmax - subpoints(k).dmax);
+            tbest = 2 * (optimal(end).fc - subpoints{k}.fc) / ...
+               (optimal(end).dmax - subpoints{k}.dmax);
             if(tbest > best)
                 best = tbest;
                 jbest = j;
             end
         end
         if(best > 0 && jbest == j) % Include other check (epsilon) here.
-            io = io + 1;
-            optimal(io) = subpoints(j);
+            optimal(end+1) = subpoints{j};
         end
     end
     
     % Process each optimal rectangle
+    delete_list = cell(enum,1);
     for j=1:length(optimal)
         % Divide the rectangle and add new rectangles to the list
-        Rt = divide(optimal(j));
-        R = [R, Rt];
+        Rt = divide(optimal(j),opt_fun);
+        index = optimal(j).index;
+        emin = optimal(j).emin;
+        delete_list{emin+1}(end+1) = index;
+        % Process list of new rectangles
+        for k=1:length(Rt)
+            emin = Rt(k).emin;
+            R{emin+1}(end+1) = Rt(k);
+        end
     end
-    
+    % Delete rectangles
+    for j=1:length(delete_list)
+        if(length(delete_list{j}) > 0)
+            R{j}(delete_list{j}) = [];
+        end
+    end
 
+    keyboard;
 end
