@@ -1,9 +1,6 @@
 function Rt = divide(r, fun)
 % Algorithm to divide the rectangle.
 emin = min(r.e); % 0-based
-if(emin+1 ~= r.emin)
-    fprintf('Error on emin.!\n');
-end
 delta = (1/3)^(emin+1); % Divide the longest side length (using +1)
 % Find all dimensions having the longest side length.
 ind = find(r.e == emin);
