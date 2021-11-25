@@ -89,7 +89,7 @@ for i=1:iter
         for k=1:length(Rt)
             emin = Rt(k).emin;
             if emin==length(R)
-                R{emin+1} = Rt(k)
+                R{emin+1} = Rt(k);
             else
                 R{emin+1}(end+1) = Rt(k);
             end
@@ -105,6 +105,7 @@ for i=1:iter
     % Draw rectangles created so far.
     draw_rectangles_2d;
     
+    fprintf('Press a ENTER to continue\n');
     pause;
 end
 
@@ -124,9 +125,10 @@ for j=1:length(R)
     end
 end
 r = R{jmin}(kmin);
-fprintf('The minimizing rectangle has center = [');
-for i=1:dim
-    fprintf('%g, ',r.c(i));
+fprintf('The minimizing rectangle has center = [\n');
+for j=1:dim
+    fprintf('%g\n',r.c(j));
 end
 fprintf('].\n');
-
+fprintf('Minimum cost = %g\n',fmin);
+fprintf('Number of iterations = %d\n',i);
