@@ -27,7 +27,8 @@ e = zeros(dim,1); % List of exponents (3^e) of rectangle edge lengths
 r = new_rectangle(opt_fun, c, e); % Make a rectangle
 
 % Create list of lists of rectangles (using nested cell arrays)
-epsilon = 1e-3; % Set precision of final rectangle
+max_num_rectangles = 1000; % Maximum number of rectangles to make
+epsilon = 1e-10; % Set precision of final rectangle
 emax = ceil(log(epsilon) / log(1/3));
 enum = emax + 1;
 elist = [0:emax];
@@ -102,6 +103,16 @@ for i=1:iter
         end
     end
 
+    % Count rectangles
+    numr = 0;
+    for j=1:length(R)
+        numr = numr + length(R{j});
+    end
+    fprintf('Number of rectangesl = %d\n',numr);
+    if(numr > max_num_rectangles)
+        break;
+    end
+    
     % Draw rectangles created so far.
     draw_rectangles_2d;
     
